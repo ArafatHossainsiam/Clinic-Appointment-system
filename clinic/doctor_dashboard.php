@@ -10,15 +10,27 @@ $conn = getDBConnection();
 $doctor_id = $_SESSION['user_id'];
 
 // Get doctor's appointments
-$appointments_query = "SELECT a.*, u.name as patient_name, u.phone as patient_phone, u.email as patient_email
+// Confirmed appointments
+$confirmed_query = "SELECT a.*, u.name as patient_name, u.phone as patient_phone, u.email as patient_email
     FROM appointments a 
     JOIN users u ON a.patient_id = u.user_id 
     WHERE a.doctor_id = ? AND a.status = 'confirmed'
     ORDER BY a.appointment_date ASC, a.appointment_time ASC";
-$stmt = $conn->prepare($appointments_query);
+$stmt = $conn->prepare($confirmed_query);
 $stmt->bind_param("s", $doctor_id);
 $stmt->execute();
-$appointments = $stmt->get_result();
+$confirmed_appointments = $stmt->get_result();
+
+// Pending requests for this doctor
+$pending_query = "SELECT a.*, u.name as patient_name, u.phone as patient_phone, u.email as patient_email
+    FROM appointments a 
+    JOIN users u ON a.patient_id = u.user_id 
+    WHERE a.doctor_id = ? AND a.status = 'pending'
+    ORDER BY a.appointment_date ASC, a.appointment_time ASC";
+$stmt = $conn->prepare($pending_query);
+$stmt->bind_param("s", $doctor_id);
+$stmt->execute();
+$pending_appointments = $stmt->get_result();
 
 // Get statistics
 $stats_query = "SELECT 
@@ -83,7 +95,7 @@ $stats = $stmt->get_result()->fetch_assoc();
                 </div>
             </div>
 
-            <!-- Today's Appointments -->
+            <!-- Upcoming Appointments -->
             <div class="morphism-card" style="margin-bottom: 30px;">
                 <h2><i class="fas fa-calendar-day"></i> Upcoming Appointments</h2>
                 <div class="table-container">
@@ -98,8 +110,8 @@ $stats = $stmt->get_result()->fetch_assoc();
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if($appointments->num_rows > 0): ?>
-                            <?php while($apt = $appointments->fetch_assoc()): ?>
+                            <?php if($confirmed_appointments->num_rows > 0): ?>
+                            <?php while($apt = $confirmed_appointments->fetch_assoc()): ?>
                             <tr>
                                 <td>
                                     <strong><?php echo $apt['patient_name']; ?></strong><br>
@@ -129,6 +141,54 @@ $stats = $stmt->get_result()->fetch_assoc();
                                 <td colspan="5" style="text-align: center; padding: 40px;">
                                     <i class="fas fa-calendar-times" style="font-size: 48px; color: var(--text-secondary); margin-bottom: 15px;"></i>
                                     <p>No upcoming appointments</p>
+                                </td>
+                            </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pending Requests -->
+            <div class="morphism-card" style="margin-bottom: 30px;">
+                <h2><i class="fas fa-hourglass-half"></i> Pending Requests</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Patient</th>
+                                <th>Date & Time</th>
+                                <th>Problem</th>
+                                <th>Medical Details</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if($pending_appointments->num_rows > 0): ?>
+                            <?php while($apt = $pending_appointments->fetch_assoc()): ?>
+                            <tr>
+                                <td>
+                                    <strong><?php echo $apt['patient_name']; ?></strong><br>
+                                    <small><?php echo $apt['patient_id']; ?></small><br>
+                                    <small><i class="fas fa-phone"></i> <?php echo $apt['patient_phone']; ?></small>
+                                </td>
+                                <td>
+                                    <strong><?php echo formatDate($apt['appointment_date']); ?></strong><br>
+                                    <small><?php echo formatTime($apt['appointment_time']); ?></small>
+                                </td>
+                                <td><?php echo $apt['problem_description']; ?></td>
+                                <td><?php echo $apt['medical_details'] ?: 'None provided'; ?></td>
+                                <td>
+                                    <span class="badge badge-pending">Pending</span>
+                                    <small style="display:block;color:var(--text-secondary);">Awaiting assistant confirmation</small>
+                                </td>
+                            </tr>
+                            <?php endwhile; ?>
+                            <?php else: ?>
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 40px;">
+                                    <i class="fas fa-inbox" style="font-size: 48px; color: var(--text-secondary); margin-bottom: 15px;"></i>
+                                    <p>No pending requests</p>
                                 </td>
                             </tr>
                             <?php endif; ?>

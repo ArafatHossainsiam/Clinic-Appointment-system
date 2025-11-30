@@ -1,5 +1,3 @@
-// ============ api/get_patient_history.php
-
 <?php
 require_once '../config.php';
 

@@ -1,5 +1,3 @@
-// ============ api/add_doctor.php
-
 <?php
 require_once '../config.php';
 
@@ -34,7 +32,7 @@ try {
     
     // Insert into doctors table
     $stmt = $conn->prepare("INSERT INTO doctors (doctor_id, name, specialty, qualifications, achievements, email, phone, experience_years, consultation_fee) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssssis", $doctor_id, $name, $specialty, $qualifications, $achievements, $email, $phone, $experience_years, $consultation_fee);
+    $stmt->bind_param("sssssssid", $doctor_id, $name, $specialty, $qualifications, $achievements, $email, $phone, $experience_years, $consultation_fee);
     $stmt->execute();
     
     $conn->commit();

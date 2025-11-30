@@ -1,5 +1,3 @@
-// ============ api/download_prescription.php
-
 <?php
 require_once '../config.php';
 

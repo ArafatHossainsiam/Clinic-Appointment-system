@@ -1,5 +1,3 @@
-// ============ api/update_appointment.php
-
 <?php
 require_once '../config.php';
 

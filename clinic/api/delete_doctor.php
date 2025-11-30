@@ -1,5 +1,3 @@
-// ============ api/delete_doctor.php
-
 <?php
 require_once '../config.php';
 

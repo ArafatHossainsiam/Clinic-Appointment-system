@@ -1,5 +1,3 @@
-// ============ api/add_prescription.php
-
 <?php
 require_once '../config.php';
 
