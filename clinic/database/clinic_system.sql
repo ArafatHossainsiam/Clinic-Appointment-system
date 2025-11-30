@@ -28,6 +28,9 @@ CREATE TABLE doctors (
     phone VARCHAR(20),
     experience_years INT,
     consultation_fee DECIMAL(10,2),
+    slot_start_time TIME,
+    slot_end_time TIME,
+    max_slots INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (doctor_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
@@ -107,9 +110,9 @@ INSERT INTO users (user_id, name, password, role, email, phone) VALUES
 ('PAT002', 'Emma Williams', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'patient', 'emma.w@email.com', '123-456-7894');
 
 -- Sample Doctors
-INSERT INTO doctors (doctor_id, name, specialty, qualifications, achievements, email, phone, experience_years, consultation_fee) VALUES
-('DOC001', 'Dr. Michael Chen', 'Cardiology', 'MBBS, MD (Cardiology), FACC', 'Published 50+ research papers, Award for Excellence in Cardiac Care 2023', 'dr.chen@clinic.com', '123-456-7891', 15, 150.00),
-('DOC002', 'Dr. Emily Rodriguez', 'Pediatrics', 'MBBS, MD (Pediatrics), FAAP', 'Best Pediatrician Award 2022, Specialist in Child Development', 'dr.rodriguez@clinic.com', '123-456-7892', 12, 120.00);
+INSERT INTO doctors (doctor_id, name, specialty, qualifications, achievements, email, phone, experience_years, consultation_fee, slot_start_time, slot_end_time, max_slots) VALUES
+('DOC001', 'Dr. Michael Chen', 'Cardiology', 'MBBS, MD (Cardiology), FACC', 'Published 50+ research papers, Award for Excellence in Cardiac Care 2023', 'dr.chen@clinic.com', '123-456-7891', 15, 150.00, '09:00:00', '17:00:00', 12),
+('DOC002', 'Dr. Emily Rodriguez', 'Pediatrics', 'MBBS, MD (Pediatrics), FAAP', 'Best Pediatrician Award 2022, Specialist in Child Development', 'dr.rodriguez@clinic.com', '123-456-7892', 12, 120.00, '10:00:00', '16:00:00', 10);
 
 -- Sample Appointments
 INSERT INTO appointments (appointment_id, patient_id, doctor_id, appointment_date, appointment_time, status, problem_description) VALUES

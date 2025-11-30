@@ -84,14 +84,46 @@ if (!empty($phone)) {
 }
 
 // Check if doctor exists
-$stmt = $conn->prepare("SELECT doctor_id FROM doctors WHERE doctor_id = ?");
+$stmt = $conn->prepare("SELECT doctor_id, slot_start_time, slot_end_time, max_slots FROM doctors WHERE doctor_id = ?");
 $stmt->bind_param("s", $doctor_id);
 $stmt->execute();
-if ($stmt->get_result()->num_rows === 0) {
+$docRes = $stmt->get_result();
+if ($docRes->num_rows === 0) {
     echo json_encode(['success' => false, 'message' => 'Invalid doctor ID']);
+    $stmt->close();
+    $conn->close();
     exit();
 }
+$doctorRow = $docRes->fetch_assoc();
 $stmt->close();
+
+// Enforce slot window
+if (!empty($doctorRow['slot_start_time']) && !empty($doctorRow['slot_end_time'])) {
+    $timeOkStmt = $conn->prepare("SELECT TIME(?) BETWEEN TIME(?) AND TIME(?) AS ok");
+    $timeOkStmt->bind_param("sss", $appointment_time, $doctorRow['slot_start_time'], $doctorRow['slot_end_time']);
+    $timeOkStmt->execute();
+    $okRes = $timeOkStmt->get_result()->fetch_assoc();
+    $timeOkStmt->close();
+    if (!(int)$okRes['ok']) {
+        echo json_encode(['success' => false, 'message' => 'Selected time is outside doctor\'s available window']);
+        $conn->close();
+        exit();
+    }
+}
+
+// Enforce max slots for the day
+if (!is_null($doctorRow['max_slots']) && (int)$doctorRow['max_slots'] > 0) {
+    $countStmt = $conn->prepare("SELECT COUNT(*) AS booked FROM appointments WHERE doctor_id = ? AND appointment_date = ? AND status <> 'cancelled'");
+    $countStmt->bind_param("ss", $doctor_id, $appointment_date);
+    $countStmt->execute();
+    $booked = $countStmt->get_result()->fetch_assoc()['booked'];
+    $countStmt->close();
+    if ((int)$booked >= (int)$doctorRow['max_slots']) {
+        echo json_encode(['success' => false, 'message' => 'No slots available for the selected date']);
+        $conn->close();
+        exit();
+    }
+}
 
 // Generate unique appointment ID
 $appointment_id = generateUniqueId('APT');

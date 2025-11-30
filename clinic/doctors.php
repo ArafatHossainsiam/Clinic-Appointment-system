@@ -41,9 +41,15 @@ $doctors = $conn->query($doctors_query);
                 <?php while($doctor = $doctors->fetch_assoc()): ?>
                 <div class="morphism-card">
                     <div style="text-align: center; margin-bottom: 20px;">
+                        <?php if (!empty($doctor['photo'])): ?>
+                        <div style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; margin: 0 auto 15px; border: 4px solid var(--primary-color); box-shadow: 0 4px 10px var(--shadow-light);">
+                            <img src="<?php echo htmlspecialchars($doctor['photo']); ?>" alt="<?php echo htmlspecialchars($doctor['name']); ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <?php else: ?>
                         <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-user-md" style="font-size: 50px; color: white;"></i>
                         </div>
+                        <?php endif; ?>
                         <h2 style="color: var(--primary-color); margin-bottom: 5px;"><?php echo $doctor['name']; ?></h2>
                         <p style="color: var(--text-secondary); font-size: 16px; margin-bottom: 10px;">
                             <i class="fas fa-stethoscope"></i> <?php echo $doctor['specialty']; ?>

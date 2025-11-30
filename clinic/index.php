@@ -144,18 +144,18 @@ if (isLoggedIn()) {
                     <input type="password" name="password" required placeholder="Set or enter your password">
                 </div>
                 <div class="form-group">
+                    <label>Appointment Date</label>
+                    <input id="appointmentDate" type="date" name="appointment_date" required min="<?php echo date('Y-m-d'); ?>">
+                </div>
+                <div class="form-group">
+                    <label>Preferred Time</label>
+                    <input id="appointmentTime" type="time" name="appointment_time" required>
+                </div>
+                 <div class="form-group">
                     <label>Select Doctor</label>
                     <select name="doctor_id" required id="doctorSelect">
                         <option value="">Choose a doctor...</option>
                     </select>
-                </div>
-                <div class="form-group">
-                    <label>Appointment Date</label>
-                    <input type="date" name="appointment_date" required min="<?php echo date('Y-m-d'); ?>">
-                </div>
-                <div class="form-group">
-                    <label>Preferred Time</label>
-                    <input type="time" name="appointment_time" required>
                 </div>
                 <div class="form-group">
                     <label>Problem Description</label>
@@ -175,23 +175,33 @@ if (isLoggedIn()) {
 
     <script src="js/main.js"></script>
     <script>
-        // Load doctors for appointment form
-        async function loadDoctors() {
+        async function loadAvailableDoctors() {
+            const dateEl = document.getElementById('appointmentDate');
+            const timeEl = document.getElementById('appointmentTime');
+            const select = document.getElementById('doctorSelect');
+            select.innerHTML = '<option value="">Choose a doctor...</option>';
+            if (!dateEl.value || !timeEl.value) {
+                select.disabled = true;
+                return;
+            }
+            select.disabled = true;
             try {
-                const response = await fetch('api/get_doctors.php');
+                const url = `api/get_available_doctors.php?date=${encodeURIComponent(dateEl.value)}&time=${encodeURIComponent(timeEl.value)}`;
+                const response = await fetch(url);
                 const doctors = await response.json();
-                const select = document.getElementById('doctorSelect');
                 doctors.forEach(doc => {
                     const option = document.createElement('option');
                     option.value = doc.doctor_id;
-                    option.textContent = `${doc.name} - ${doc.specialty}`;
+                    option.textContent = `${doc.name} - ${doc.specialty} (slots: ${doc.available_slots})`;
                     select.appendChild(option);
                 });
+                select.disabled = false;
             } catch (error) {
                 console.error('Error loading doctors:', error);
             }
         }
-        loadDoctors();
+        document.getElementById('appointmentDate').addEventListener('change', loadAvailableDoctors);
+        document.getElementById('appointmentTime').addEventListener('change', loadAvailableDoctors);
 
     </script>
 </body>

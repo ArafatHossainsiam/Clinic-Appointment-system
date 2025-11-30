@@ -203,16 +203,16 @@ $doctors = $conn->query($doctors_query);
                     <input type="text" name="doctor_id" required placeholder="e.g., DOC003">
                 </div>
                 <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" required>
+                </div>
+                <div class="form-group">
                     <label>Full Name</label>
                     <input type="text" name="name" required>
                 </div>
                 <div class="form-group">
                     <label>Email</label>
                     <input type="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" name="password" required>
                 </div>
                 <div class="form-group">
                     <label>Specialty</label>
@@ -237,6 +237,22 @@ $doctors = $conn->query($doctors_query);
                 <div class="form-group">
                     <label>Phone</label>
                     <input type="tel" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label>Photo</label>
+                    <input type="file" name="photo" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label>Slot Start Time</label>
+                    <input type="time" name="slot_start_time" required>
+                </div>
+                <div class="form-group">
+                    <label>Slot End Time</label>
+                    <input type="time" name="slot_end_time" required>
+                </div>
+                <div class="form-group">
+                    <label>Max Slots per Day</label>
+                    <input type="number" name="max_slots" required min="0">
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">
                     <i class="fas fa-save"></i> Add Doctor
