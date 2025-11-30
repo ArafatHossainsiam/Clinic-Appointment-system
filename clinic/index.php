@@ -52,9 +52,9 @@ if (isLoggedIn()) {
                     </button>
                 </div>
 
-                <div class="login-section">
-                    <h3>Login Portal</h3>
-                    <div class="login-cards">
+            <div class="login-section">
+                <h3>Login Portal</h3>
+                <div class="login-cards">
                         <div class="morphism-card login-card" onclick="openModal('loginModal', 'assistant')">
                             <i class="fas fa-user-shield"></i>
                             <h4>Assistant</h4>
@@ -120,7 +120,7 @@ if (isLoggedIn()) {
                 </button>
             </form>
             <div class="form-footer">
-                <p>Test Credentials: ID: AST001, DOC001, PAT001 | Password: password123</p>
+                <p>Test Credentials: ID: AST001, DOC001, PAT001 | Password: password</p>
             </div>
         </div>
     </div>
@@ -132,8 +132,16 @@ if (isLoggedIn()) {
             <h2><i class="fas fa-calendar-plus"></i> Request Appointment</h2>
             <form id="appointmentForm" action="appointment_request.php" method="POST">
                 <div class="form-group">
-                    <label>Patient ID</label>
-                    <input type="text" name="patient_id" required placeholder="Your Patient ID (e.g., PAT001)">
+                    <label>Full Name</label>
+                    <input type="text" name="name" required placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number (used as Patient ID)</label>
+                    <input type="tel" name="phone" required placeholder="e.g., 1234567890">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" required placeholder="Set or enter your password">
                 </div>
                 <div class="form-group">
                     <label>Select Doctor</label>
@@ -164,6 +172,7 @@ if (isLoggedIn()) {
         </div>
     </div>
 
+
     <script src="js/main.js"></script>
     <script>
         // Load doctors for appointment form
@@ -183,6 +192,7 @@ if (isLoggedIn()) {
             }
         }
         loadDoctors();
+
     </script>
 </body>
 </html>

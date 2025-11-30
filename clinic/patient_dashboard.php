@@ -87,7 +87,7 @@ $stats = [
             <div class="morphism-card" style="margin-bottom: 30px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                     <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
-                    <button class="btn btn-primary" onclick="window.location.href='index.php#appointment'">
+                    <button class="btn btn-primary" onclick="openModal('appointmentModal')">
                         <i class="fas fa-calendar-plus"></i> Request New Appointment
                     </button>
                 </div>
@@ -263,8 +263,84 @@ $stats = [
         </div>
     </div>
 
+    <!-- Appointment Modal -->
+    <div id="appointmentModal" class="modal">
+        <div class="modal-content morphism-card">
+            <span class="close" onclick="closeModal('appointmentModal')">&times;</span>
+            <h2><i class="fas fa-calendar-plus"></i> Request Appointment</h2>
+            <form id="appointmentForm" action="appointment_request.php" method="POST">
+                <div class="form-group">
+                    <label>Patient ID</label>
+                    <input type="text" name="patient_id" required value="<?php echo $_SESSION['user_id']; ?>" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Select Doctor</label>
+                    <select name="doctor_id" required id="doctorSelectPatient">
+                        <option value="">Choose a doctor...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Appointment Date</label>
+                    <input type="date" name="appointment_date" required min="<?php echo date('Y-m-d'); ?>">
+                </div>
+                <div class="form-group">
+                    <label>Preferred Time</label>
+                    <input type="time" name="appointment_time" required>
+                </div>
+                <div class="form-group">
+                    <label>Problem Description</label>
+                    <textarea name="problem_description" rows="3" required placeholder="Describe your health concern..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Medical Details (Optional)</label>
+                    <textarea name="medical_details" rows="3" placeholder="Any existing conditions, medications, allergies..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fas fa-paper-plane"></i> Submit Request
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script src="js/main.js"></script>
     <script>
+        async function loadDoctorsPatient() {
+            try {
+                const response = await fetch('api/get_doctors.php');
+                const doctors = await response.json();
+                const select = document.getElementById('doctorSelectPatient');
+                doctors.forEach(doc => {
+                    const option = document.createElement('option');
+                    option.value = doc.doctor_id;
+                    option.textContent = `${doc.name} - ${doc.specialty}`;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading doctors:', error);
+            }
+        }
+        loadDoctorsPatient();
+
+        document.getElementById('appointmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            try {
+                const response = await fetch('appointment_request.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showNotification('Appointment request submitted successfully', 'success');
+                    closeModal('appointmentModal');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Failed to submit appointment request', 'error');
+            }
+        });
         function downloadPrescription(prescriptionId) {
             window.open(`api/download_prescription.php?prescription_id=${prescriptionId}`, '_blank');
         }
