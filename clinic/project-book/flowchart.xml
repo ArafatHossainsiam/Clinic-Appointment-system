@@ -1,0 +1,83 @@
+<mxGraphModel>
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+
+    <!-- Users -->
+    <mxCell id="users" value="Users\n—\nid (PK)\nrole (assistant|doctor|patient)\nname\nphone\npassword_hash\ncreated_at" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="40" y="40" width="220" height="160" as="geometry"/>
+    </mxCell>
+
+    <!-- Doctors -->
+    <mxCell id="doctors" value="Doctors\n—\nid (PK)\nuser_id (FK → Users.id)\nspecialty\nslot_start_time\nslot_end_time\nmax_slots\nphoto_url\ncreated_at" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="320" y="40" width="240" height="180" as="geometry"/>
+    </mxCell>
+
+    <!-- Appointments -->
+    <mxCell id="appointments" value="Appointments\n—\nid (PK)\npatient_id (FK → Users.id)\ndoctor_id (FK → Doctors.id)\ndate\ntime\nstatus (pending|confirmed|cancelled)\nnotes\ncreated_at" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="320" y="240" width="260" height="200" as="geometry"/>
+    </mxCell>
+
+    <!-- Prescriptions -->
+    <mxCell id="prescriptions" value="Prescriptions\n—\nid (PK)\nappointment_id (FK → Appointments.id)\npatient_id (FK → Users.id)\ndoctor_id (FK → Doctors.id)\ncontent\ncreated_at" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="40" y="240" width="240" height="180" as="geometry"/>
+    </mxCell>
+
+    <!-- Medical History -->
+    <mxCell id="medical_history" value="Medical_History\n—\nid (PK)\npatient_id (FK → Users.id)\nappointment_id (FK → Appointments.id)\nsummary\ncreated_at" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="620" y="240" width="240" height="160" as="geometry"/>
+    </mxCell>
+
+    <!-- Documents -->
+    <mxCell id="documents" value="Documents\n—\nid (PK)\npatient_id (FK → Users.id)\nurl\ntype\ncreated_at" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="620" y="40" width="220" height="140" as="geometry"/>
+    </mxCell>
+
+    <!-- Edges: Doctors.user_id → Users.id -->
+    <mxCell id="e_doctors_users" value="FK: user_id → Users.id" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="doctors" target="users">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="260" y="130" as="targetPoint"/>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- Edges: Appointments.patient_id → Users.id -->
+    <mxCell id="e_appt_users" value="FK: patient_id → Users.id" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="appointments" target="users">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Edges: Appointments.doctor_id → Doctors.id -->
+    <mxCell id="e_appt_doctors" value="FK: doctor_id → Doctors.id" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="appointments" target="doctors">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Edges: Prescriptions.appointment_id → Appointments.id -->
+    <mxCell id="e_rx_appt" value="FK: appointment_id → Appointments.id" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="prescriptions" target="appointments">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Edges: Prescriptions.patient_id → Users.id -->
+    <mxCell id="e_rx_users" value="FK: patient_id → Users.id" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="prescriptions" target="users">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Edges: Prescriptions.doctor_id → Doctors.id -->
+    <mxCell id="e_rx_doctors" value="FK: doctor_id → Doctors.id" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="prescriptions" target="doctors">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Edges: Medical_History.patient_id → Users.id -->
+    <mxCell id="e_hist_users" value="FK: patient_id → Users.id" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="medical_history" target="users">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Edges: Medical_History.appointment_id → Appointments.id -->
+    <mxCell id="e_hist_appt" value="FK: appointment_id → Appointments.id" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="medical_history" target="appointments">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- Edges: Documents.patient_id → Users.id -->
+    <mxCell id="e_docs_users" value="FK: patient_id → Users.id" style="endArrow=block;html=1;strokeWidth=2;" edge="1" parent="1" source="documents" target="users">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+  </root>
+</mxGraphModel>
