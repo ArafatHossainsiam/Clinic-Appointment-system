@@ -273,12 +273,7 @@ $stats = [
                     <label>Patient ID</label>
                     <input type="text" name="patient_id" required value="<?php echo $_SESSION['user_id']; ?>" readonly>
                 </div>
-                <div class="form-group">
-                    <label>Select Doctor</label>
-                    <select name="doctor_id" required id="doctorSelectPatient">
-                        <option value="">Choose a doctor...</option>
-                    </select>
-                </div>
+                
                 <div class="form-group">
                     <label>Appointment Date</label>
                     <input type="date" name="appointment_date" required min="<?php echo date('Y-m-d'); ?>">
@@ -286,6 +281,12 @@ $stats = [
                 <div class="form-group">
                     <label>Preferred Time</label>
                     <input type="time" name="appointment_time" required>
+                </div>
+                <div class="form-group">
+                    <label>Select Doctor</label>
+                    <select name="doctor_id" required id="doctorSelectPatient">
+                        <option value="">Choose a doctor...</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Problem Description</label>
